@@ -1,0 +1,8 @@
+@extends('layouts.app', ['heading' => 'Utilisateur', 'eyebrow' => 'Administration'])
+@section('content')
+@php($role = $user->roles->first()?->slug)
+<div class="panel max-w-3xl"><div class="flex items-start justify-between"><div><p class="section-kicker">{{ $user->is_active ? 'Actif' : 'Inactif' }}</p><h2 class="hero-title">{{ $user->name }}</h2></div><a class="button-primary" href="{{ route(request()->routeIs('admin.users.*') ? 'admin.users.edit' : 'users.edit', $user) }}">Modifier</a></div>
+<dl class="mt-6 grid gap-4 md:grid-cols-2"><div><dt class="font-semibold">Email</dt><dd>{{ $user->email }}</dd></div><div><dt class="font-semibold">Téléphone</dt><dd>{{ $user->phone ?: '—' }}</dd></div><div><dt class="font-semibold">Entreprise</dt><dd>{{ $user->company?->legal_name ?: $user->company?->name ?: '—' }}</dd></div><div><dt class="font-semibold">Rôle</dt><dd>{{ $role === 'super-administrator' ? 'Super administrateur (super-administrator)' : ($role ?: 'operator') }}</dd></div></dl>
+<div class="mt-6 flex gap-3">@if($user->is_active)<form method="post" action="{{ route(request()->routeIs('admin.users.*') ? 'admin.users.deactivate' : 'users.deactivate', $user) }}">@csrf @method('patch')<button class="button-secondary">Désactiver</button></form>@else<form method="post" action="{{ route(request()->routeIs('admin.users.*') ? 'admin.users.activate' : 'users.activate', $user) }}">@csrf @method('patch')<button class="button-primary">Activer</button></form>@endif<a class="button-secondary" href="{{ route(request()->routeIs('admin.users.*') ? 'admin.users.index' : 'users.index') }}">Retour</a></div>
+</div>
+@endsection
